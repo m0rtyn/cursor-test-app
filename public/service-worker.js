@@ -1,4 +1,5 @@
 const CACHE_NAME = 'task-manager-cache-v1';
+const DYNAMIC_CACHE = 'dynamic-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -26,7 +27,16 @@ self.addEventListener('fetch', (event) => {
         if (response) {
           return response;
         }
-        return fetch(event.request);
+        return fetch(event.request).then(fetchResponse => {
+          // Кэшируем новые запросы
+          return caches.open(DYNAMIC_CACHE).then(cache => {
+            cache.put(event.request.url, fetchResponse.clone());
+            return fetchResponse;
+          })
+        });
+      }).catch(() => {
+        // Возвращаем заглушку, если запрос не удался и нет кэша
+        return new Response('Offline content not available');
       })
   );
 });

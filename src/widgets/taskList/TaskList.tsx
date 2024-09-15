@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../app/providers/store';
 import { updateTaskStatus } from '../../entities/task/taskSlice';
@@ -15,6 +15,20 @@ const TaskList: React.FC = () => {
   const currentTask = useSelector((state: RootState) => state.task.currentTask);
   const { isRunning, remainingTime, duration } = useSelector((state: RootState) => state.timer);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   const handleTaskStatus = useCallback((id: string, status: 'completed' | 'failed') => {
     const actualDuration = currentTask?.duration ? currentTask.duration - remainingTime : 0;
@@ -36,6 +50,11 @@ const TaskList: React.FC = () => {
 
   return (
     <Flex direction="column" gap="3" className={styles.taskList}>
+      {!isOnline && (
+        <Text color="red" className={styles.offlineWarning}>
+          You are currently offline. Some features may be limited.
+        </Text>
+      )}
       <Text size="5" weight="bold" className={styles.title}>Task List</Text>
       {tasks.map((task: Task) => (
         <Flex key={task.id} direction="column" gap="2" className={styles.taskItem}>
