@@ -18,7 +18,7 @@ export const StartTimerButton: React.FC<StartTimerButtonProps> = ({ taskName, du
   };
 
   return (
-    <Button onClick={handleStart} disabled={disabled}>
+    <Button onClick={handleStart} disabled={disabled} size="4">
       Start Timer
     </Button>
   );

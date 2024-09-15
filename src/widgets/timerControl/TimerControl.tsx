@@ -41,8 +41,10 @@ const TimerControl: React.FC = () => {
         value={taskName}
         onChange={(e) => setTaskName(e.target.value)}
         placeholder="Task name"  
+        size="3"
       />
-      <Select.Root value={selectedDuration.toString()} onValueChange={(value) => setSelectedDuration(Number(value))}>
+
+      <Select.Root size="3" value={selectedDuration.toString()} onValueChange={(value) => setSelectedDuration(Number(value))}>
         <Select.Trigger />
         <Select.Content>
           {DURATION_OPTIONS.map(option => (
@@ -53,6 +55,7 @@ const TimerControl: React.FC = () => {
         </Select.Content>
       </Select.Root>
       <StartTimerButton taskName={taskName} duration={selectedDuration} disabled={isRunning} />
+      
       {isRunning && (
         <Flex direction="column" gap="2">
           <Progress value={progress} />
