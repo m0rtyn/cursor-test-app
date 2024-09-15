@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../app/providers/store';
 import { updateRemainingTime, stopTimer } from '../../entities/timer/timerSlice';
 import { StartTimerButton } from '../../features/startTimer/ui/StartTimerButton';
-import { Select, Text, Flex, Progress } from '@radix-ui/themes';
+import { Select, Text, Flex, Progress, TextField } from '@radix-ui/themes';
 
 const DURATION_OPTIONS = [
   { value: 15 * 60, label: '15 minutes' },
@@ -37,11 +37,10 @@ const TimerControl: React.FC = () => {
 
   return (
     <Flex direction="column" gap="3">
-      <input
-        type="text"
+      <TextField.Root
         value={taskName}
         onChange={(e) => setTaskName(e.target.value)}
-        placeholder="Task name"
+        placeholder="Task name"  
       />
       <Select.Root value={selectedDuration.toString()} onValueChange={(value) => setSelectedDuration(Number(value))}>
         <Select.Trigger />
