@@ -12,7 +12,7 @@ const TaskList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const tasks = useSelector((state: RootState) => state.task.tasks);
   const currentTask = useSelector((state: RootState) => state.task.currentTask);
-  const { isRunning, remainingTime } = useSelector((state: RootState) => state.timer);
+  const { isRunning, remainingTime, duration } = useSelector((state: RootState) => state.timer);
   const [showConfetti, setShowConfetti] = useState(false);
 
   const handleTaskStatus = useCallback((id: string, status: 'completed' | 'failed') => {
@@ -39,9 +39,9 @@ const TaskList: React.FC = () => {
       {tasks.map((task: Task) => (
         <Flex key={task.id} direction="column" gap="2">
           <Text>{task.name} - {task.status}</Text>
-          {task.status !== 'pending' && task.actualDuration !== undefined && (
+          {task.status !== 'pending' && (
             <Text size="2" color="gray">
-              Duration: {formatDuration(task.actualDuration)}
+              Duration: {formatDuration(task.actualDuration || task.duration)}
             </Text>
           )}
           {task.status === 'pending' && (

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../app/providers/store';
-import { startTimer, stopTimer, updateRemainingTime } from '../../entities/timer/timerSlice';
-import { addTask, setCurrentTask } from '../../entities/task/taskSlice';
-import { Task } from '../../entities/task/types';
-import { Button, Select, Text, Flex } from '@radix-ui/themes';
+import { updateRemainingTime, stopTimer } from '../../entities/timer/timerSlice';
+import { StartTimerButton } from '../../features/startTimer/ui/StartTimerButton';
+import { StopTimerButton } from '../../features/stopTimer/ui/StopTimerButton';
+import { Select, Text, Flex, Progress } from '@radix-ui/themes';
 
 const DURATION_OPTIONS = [
   { value: 15 * 60, label: '15 minutes' },
@@ -20,34 +20,19 @@ const TimerControl: React.FC = () => {
   const [taskName, setTaskName] = useState('');
   const [selectedDuration, setSelectedDuration] = useState(25 * 60);
 
-  const handleTimerEnd = useCallback(() => {
-    dispatch(stopTimer());
-    // TODO: Implement notification logic here
-  }, [dispatch]);
-
   useEffect(() => {
-    let interval: number;
+    let interval: number | undefined;
     if (isRunning && remainingTime > 0) {
       interval = window.setInterval(() => {
         dispatch(updateRemainingTime(remainingTime - 1));
       }, 1000);
     } else if (remainingTime === 0 && isRunning) {
-      handleTimerEnd();
+      dispatch(stopTimer());
     }
-    return () => window.clearInterval(interval);
-  }, [isRunning, remainingTime, dispatch, handleTimerEnd]);
-
-  const handleStart = () => {
-    const newTask: Task = {
-      id: Date.now().toString(),
-      name: taskName || `Task ${Date.now()}`,
-      duration: selectedDuration,
-      status: 'pending',
+    return () => {
+      if (interval) window.clearInterval(interval);
     };
-    dispatch(addTask(newTask));
-    dispatch(setCurrentTask(newTask));
-    dispatch(startTimer(selectedDuration));
-  };
+  }, [isRunning, remainingTime, dispatch]);
 
   const progress = isRunning ? ((duration - remainingTime) / duration) * 100 : 0;
 
@@ -69,12 +54,11 @@ const TimerControl: React.FC = () => {
           ))}
         </Select.Content>
       </Select.Root>
-      <Button onClick={handleStart} disabled={isRunning}>
-        Start Timer
-      </Button>
+      <StartTimerButton taskName={taskName} duration={selectedDuration} disabled={isRunning} />
+      <StopTimerButton disabled={!isRunning} />
       {isRunning && (
         <Flex direction="column" gap="2">
-          <progress value={progress} max="100" />
+          <Progress value={progress} />
           <Text>
             Time remaining: {Math.floor(remainingTime / 60)}:{remainingTime % 60 < 10 ? '0' : ''}{remainingTime % 60}
           </Text>
