@@ -47,12 +47,12 @@ const TaskList: React.FC = () => {
           {task.status === 'pending' && (
             <Dialog.Root>
               <Dialog.Trigger asChild>
-                <Button>Complete Task</Button>
+                <Button>Close Task</Button>
               </Dialog.Trigger>
               <Dialog.Portal>
                 <Dialog.Overlay />
                 <Dialog.Content>
-                  <Dialog.Title>Complete Task</Dialog.Title>
+                  <Dialog.Title>Close Task</Dialog.Title>
                   <Dialog.Description>
                     Did you complete the task "{task.name}"?
                   </Dialog.Description>

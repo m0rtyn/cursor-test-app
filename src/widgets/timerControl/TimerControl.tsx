@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../app/providers/store';
 import { updateRemainingTime, stopTimer } from '../../entities/timer/timerSlice';
 import { StartTimerButton } from '../../features/startTimer/ui/StartTimerButton';
-import { StopTimerButton } from '../../features/stopTimer/ui/StopTimerButton';
 import { Select, Text, Flex, Progress } from '@radix-ui/themes';
 
 const DURATION_OPTIONS = [
@@ -55,7 +54,6 @@ const TimerControl: React.FC = () => {
         </Select.Content>
       </Select.Root>
       <StartTimerButton taskName={taskName} duration={selectedDuration} disabled={isRunning} />
-      <StopTimerButton disabled={!isRunning} />
       {isRunning && (
         <Flex direction="column" gap="2">
           <Progress value={progress} />
