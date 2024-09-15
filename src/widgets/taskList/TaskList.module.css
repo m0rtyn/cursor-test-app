@@ -1,0 +1,75 @@
+.taskList {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.taskItem {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.taskName {
+  font-weight: bold;
+}
+
+.taskDuration {
+  font-style: italic;
+}
+
+.closeTaskButton {
+  align-self: flex-start;
+}
+
+.dialogOverlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+}
+
+.dialogContent {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90vw;
+  width: 400px;
+}
+
+.dialogTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.dialogDescription {
+  margin-bottom: 1rem;
+}
+
+.dialogButton {
+  min-width: 100px;
+}
+
+@media (max-width: 600px) {
+  .taskList {
+    padding: 0.5rem;
+  }
+
+  .taskItem {
+    padding: 0.75rem;
+  }
+
+  .dialogContent {
+    width: 90vw;
+  }
+}
