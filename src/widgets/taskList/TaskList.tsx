@@ -1,13 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../app/providers/store';
-import { updateTaskStatus } from '../../entities/task/taskSlice';
+import { updateTaskStatus, setTasks } from '../../entities/task/taskSlice';
 import { stopTimer } from '../../entities/timer/timerSlice';
 import { Task } from '../../entities/task/types';
 import { Flex, Text, Button } from '@radix-ui/themes';
 import * as Dialog from '@radix-ui/react-dialog';
 import Confetti from '../../shared/ui/Confetti';
 import styles from './TaskList.module.css';
+import { initDB, getAllTasks, updateTask, syncTasks } from '../../shared/lib/indexedDB';
 
 const TaskList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,7 +19,26 @@ const TaskList: React.FC = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
+    const initializeDB = async () => {
+      await initDB();
+      const localTasks = await getAllTasks();
+      if (localTasks.length > 0) {
+        dispatch(setTasks(localTasks));
+      }
+    };
+
+    initializeDB();
+  }, [dispatch]);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      syncTasks(tasks).then(() => {
+        console.log('Tasks synced with server');
+      }).catch(error => {
+        console.error('Error syncing tasks:', error);
+      });
+    };
     const handleOffline = () => setIsOnline(false);
 
     window.addEventListener('online', handleOnline);
@@ -28,19 +48,29 @@ const TaskList: React.FC = () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, []);
+  }, [tasks]);
 
-  const handleTaskStatus = useCallback((id: string, status: 'completed' | 'failed') => {
+  const handleTaskStatus = useCallback(async (id: string, status: 'completed' | 'failed') => {
     const actualDuration = currentTask?.duration ? currentTask.duration - remainingTime : 0;
-    dispatch(updateTaskStatus({ id, status, actualDuration }));
+    const updatedTask = { id, status, actualDuration };
+    
+    dispatch(updateTaskStatus(updatedTask));
+    
     if (isRunning) {
       dispatch(stopTimer());
     }
+    
+    try {
+      await updateTask({ ...tasks.find(t => t.id === id)!, ...updatedTask });
+    } catch (error) {
+      console.error('Error updating task in IndexedDB:', error);
+    }
+
     if (status === 'completed') {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 3000);
     }
-  }, [currentTask, isRunning, remainingTime, dispatch]);
+  }, [currentTask, isRunning, remainingTime, dispatch, tasks]);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);

@@ -1,8 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Task, TaskState } from './types';
-import { saveToLocalStorage, loadFromLocalStorage } from '../../shared/lib/localStorage';
+import { Task } from './types';
+import { saveToLocalStorage } from '../../shared/lib/localStorage';
 
-const initialState: TaskState = loadFromLocalStorage('taskState') || {
+interface TaskState {
+  tasks: Task[];
+  currentTask: Task | null;
+}
+
+const initialState: TaskState = {
   tasks: [],
   currentTask: null,
 };
@@ -28,8 +33,11 @@ const taskSlice = createSlice({
       state.currentTask = null;
       saveToLocalStorage('taskState', state);
     },
+    setTasks: (state, action: PayloadAction<Task[]>) => {
+      state.tasks = action.payload;
+    },
   },
 });
 
-export const { addTask, setCurrentTask, updateTaskStatus } = taskSlice.actions;
+export const { addTask, updateTaskStatus, setCurrentTask, setTasks } = taskSlice.actions;
 export default taskSlice.reducer;
