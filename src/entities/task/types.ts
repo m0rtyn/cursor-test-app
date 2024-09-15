@@ -1,9 +1,9 @@
 export interface Task {
   id: string;
-  name: string;
-  duration: number;
-  status: 'pending' | 'completed' | 'failed';
+  title: string;
+  status: 'active' | 'completed' | 'paused';
   actualDuration?: number;
+  createdAt: string; // Добавляем поле createdAt
   initialDuration?: number;
 }
 

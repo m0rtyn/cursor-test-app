@@ -11,18 +11,22 @@ const taskSlice = createSlice({
   name: 'task',
   initialState,
   reducers: {
-    addTask: (state, action: PayloadAction<Task>) => {
-      state.tasks.push(action.payload);
+    addTask: (state, action: PayloadAction<Omit<Task, 'createdAt'>>) => {
+      const newTask: Task = {
+        ...action.payload,
+        createdAt: new Date().toISOString()
+      };
+      state.tasks.push(newTask);
       saveToLocalStorage('taskState', state);
     },
     setCurrentTask: (state, action: PayloadAction<Task | null>) => {
       state.currentTask = action.payload;
       saveToLocalStorage('taskState', state);
     },
-    updateTaskStatus: (state, action: PayloadAction<Task>) => {
+    updateTaskStatus: (state, action: PayloadAction<Partial<Task>>) => {
       const index = state.tasks.findIndex(t => t.id === action.payload.id);
       if (index !== -1) {
-        state.tasks[index] = action.payload;
+        state.tasks[index] = { ...state.tasks[index], ...action.payload };
       }
       state.currentTask = null;
       saveToLocalStorage('taskState', state);
