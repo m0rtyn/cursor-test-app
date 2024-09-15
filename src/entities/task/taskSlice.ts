@@ -1,11 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Task } from './types';
+import { Task, TaskState } from './types';
 import { saveToLocalStorage } from '../../shared/lib/localStorage';
-
-interface TaskState {
-  tasks: Task[];
-  currentTask: Task | null;
-}
 
 const initialState: TaskState = {
   tasks: [],
@@ -24,12 +19,10 @@ const taskSlice = createSlice({
       state.currentTask = action.payload;
       saveToLocalStorage('taskState', state);
     },
-    updateTaskStatus: (state, action: PayloadAction<{ id: string; status: 'completed' | 'failed'; actualDuration: number; initialDuration: number }>) => {
-      const task = state.tasks.find(t => t.id === action.payload.id);
-      if (task) {
-        task.status = action.payload.status;
-        task.actualDuration = action.payload.actualDuration;
-        task.initialDuration = action.payload.initialDuration;
+    updateTaskStatus: (state, action: PayloadAction<Task>) => {
+      const index = state.tasks.findIndex(t => t.id === action.payload.id);
+      if (index !== -1) {
+        state.tasks[index] = action.payload;
       }
       state.currentTask = null;
       saveToLocalStorage('taskState', state);
