@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../app/providers/store';
-import { updateTaskStatus, setTasks } from '../../entities/task/taskSlice';
+import { updateTaskStatus, setTasks, setCurrentTask } from '../../entities/task/taskSlice';
 import { stopTimer } from '../../entities/timer/timerSlice';
 import { Task } from '../../entities/task/types';
 import { Flex, Text, Button } from '@radix-ui/themes';
@@ -14,7 +14,7 @@ const TaskList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const tasks = useSelector((state: RootState) => state.task.tasks);
   const currentTask = useSelector((state: RootState) => state.task.currentTask);
-  const { isRunning, remainingTime, duration } = useSelector((state: RootState) => state.timer);
+  const { isRunning, remainingTime } = useSelector((state: RootState) => state.timer);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
@@ -28,7 +28,14 @@ const TaskList: React.FC = () => {
     };
 
     initializeDB();
-  }, [dispatch]);
+
+    // Сброс таймера и обработка незавершенной задачи при загрузке
+    if (isRunning || currentTask) {
+      handleTaskStatus(currentTask?.id || '', 'failed');
+      dispatch(stopTimer());
+      dispatch(setCurrentTask(null));
+    }
+  }, [dispatch, isRunning, currentTask]);
 
   useEffect(() => {
     const handleOnline = () => {
@@ -56,10 +63,8 @@ const TaskList: React.FC = () => {
     const updatedTask = { id, status, actualDuration, initialDuration };
     
     dispatch(updateTaskStatus(updatedTask));
-    
-    if (isRunning) {
-      dispatch(stopTimer());
-    }
+    dispatch(stopTimer());
+    dispatch(setCurrentTask(null));
     
     try {
       await updateTask({ ...tasks.find(t => t.id === id)!, ...updatedTask });
@@ -71,7 +76,7 @@ const TaskList: React.FC = () => {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 3000);
     }
-  }, [currentTask, isRunning, remainingTime, dispatch, tasks]);
+  }, [currentTask, remainingTime, dispatch, tasks]);
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);

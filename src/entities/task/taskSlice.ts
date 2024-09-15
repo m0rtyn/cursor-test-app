@@ -20,7 +20,7 @@ const taskSlice = createSlice({
       state.tasks.push(action.payload);
       saveToLocalStorage('taskState', state);
     },
-    setCurrentTask: (state, action: PayloadAction<Task>) => {
+    setCurrentTask: (state, action: PayloadAction<Task | null>) => {
       state.currentTask = action.payload;
       saveToLocalStorage('taskState', state);
     },
@@ -36,6 +36,7 @@ const taskSlice = createSlice({
     },
     setTasks: (state, action: PayloadAction<Task[]>) => {
       state.tasks = action.payload;
+      saveToLocalStorage('taskState', state);
     },
   },
 });
