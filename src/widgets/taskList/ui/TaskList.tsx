@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../app/providers/store';
-import { setTasks } from '../../entities/task/taskSlice';
-import { stopTimer } from '../../entities/timer/timerSlice';
+import { AppDispatch } from '../../../app/providers/store';
+import { setTasks } from '../../../entities/task';
+import { stopTimer } from '../../../entities/timer';
 import { Flex, Text, Grid } from '@radix-ui/themes';
-import Confetti from '../../shared/ui/Confetti';
-import styles from './TaskList.module.css';
-import { initDB, getAllTasks, syncTasks } from '../../shared/lib/indexedDB';
-import { useTaskManager } from '../../entities/task/useTaskManager';
+import Confetti from '../../../shared/ui/Confetti';
+import styles from '../TaskList.module.css';
+import { initDB, getAllTasks, syncTasks } from '../../../shared/lib/indexedDB';
+import { useTaskManager } from '../../../features/taskManagement';
 import { TaskItem } from './TaskItem';
+import { formatDuration } from '../../../shared/lib/timeUtils';
+import { Timer } from '../../../features/timerManagement';
 
 const TaskList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -51,12 +53,6 @@ const TaskList: React.FC = () => {
     };
   }, [tasks]);
 
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  };
-
   const handleCompleteTask = (id: string) => {
     handleTaskStatus(id, 'completed');
     setShowConfetti(true);
@@ -78,6 +74,7 @@ const TaskList: React.FC = () => {
       )}
       
       <Text size="5" weight="bold" className={styles.title}>Task List</Text>
+      <Timer />
       <Grid width="100%" columns="1fr 1fr 1fr" gap="3" className={styles.taskList}>
         {sortedTasks.map((task) => (
           <TaskItem

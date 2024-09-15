@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import timerReducer from '../../entities/timer/timerSlice';
-import taskReducer from '../../entities/task/taskSlice';
+import { taskReducer } from '../../entities/task';
+import { timerReducer } from '../../entities/timer';
 import { loadFromLocalStorage } from '../../shared/lib/localStorage';
 
 const preloadedState = {

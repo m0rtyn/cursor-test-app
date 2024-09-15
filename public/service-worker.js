@@ -1,3 +1,5 @@
+/// <reference lib="webworker" />
+
 const CACHE_NAME = 'task-manager-cache-v1';
 const DYNAMIC_CACHE = 'dynamic-cache-v1';
 const urlsToCache = [

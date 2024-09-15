@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../../app/providers/store';
-import { updateRemainingTime, stopTimer } from '../../entities/timer/timerSlice';
+import { RootState, AppDispatch } from '../../../app/providers/store';
+import { updateRemainingTime, stopTimer } from '../../../entities/timer';
 import { Text } from '@radix-ui/themes';
-import { formatDuration } from '../../shared/lib/timeUtils';
+import { formatDuration } from '../../../shared/lib/timeUtils';
 
 const Timer: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
