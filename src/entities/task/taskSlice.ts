@@ -24,11 +24,12 @@ const taskSlice = createSlice({
       state.currentTask = action.payload;
       saveToLocalStorage('taskState', state);
     },
-    updateTaskStatus: (state, action: PayloadAction<{ id: string; status: 'completed' | 'failed'; actualDuration: number }>) => {
+    updateTaskStatus: (state, action: PayloadAction<{ id: string; status: 'completed' | 'failed'; actualDuration: number; initialDuration: number }>) => {
       const task = state.tasks.find(t => t.id === action.payload.id);
       if (task) {
         task.status = action.payload.status;
         task.actualDuration = action.payload.actualDuration;
+        task.initialDuration = action.payload.initialDuration;
       }
       state.currentTask = null;
       saveToLocalStorage('taskState', state);

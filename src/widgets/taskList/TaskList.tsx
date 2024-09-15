@@ -52,7 +52,8 @@ const TaskList: React.FC = () => {
 
   const handleTaskStatus = useCallback(async (id: string, status: 'completed' | 'failed') => {
     const actualDuration = currentTask?.duration ? currentTask.duration - remainingTime : 0;
-    const updatedTask = { id, status, actualDuration };
+    const initialDuration = currentTask?.duration || 0;
+    const updatedTask = { id, status, actualDuration, initialDuration };
     
     dispatch(updateTaskStatus(updatedTask));
     
@@ -91,7 +92,7 @@ const TaskList: React.FC = () => {
           <Text className={styles.taskName}>{task.name} - {task.status}</Text>
           {task.status !== 'pending' && (
             <Text size="2" color="gray" className={styles.taskDuration}>
-              Duration: {formatDuration(task.actualDuration || task.duration)}
+              Actual Duration: {formatDuration(task.actualDuration || 0)} / Initial Duration: {formatDuration(task.initialDuration || task.duration)}
             </Text>
           )}
           {task.status === 'pending' && (

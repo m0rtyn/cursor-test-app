@@ -4,6 +4,7 @@ export interface Task {
   duration: number;
   status: 'pending' | 'completed' | 'failed';
   actualDuration?: number;
+  initialDuration?: number;
 }
 
 export interface TaskState {
