@@ -6,9 +6,11 @@ import { Task } from '../../../entities/task/types';
 export const startTimer = (taskName: string, duration: number) => (dispatch: AppDispatch) => {
   const newTask: Task = {
     id: Date.now().toString(),
-    name: taskName || `Task ${Date.now()}`,
-    duration,
-    status: 'pending',
+    title: taskName || `Task ${Date.now()}`,
+    actualDuration: 0,
+    initialDuration: duration,
+    status: 'active',
+    createdAt: new Date().toISOString(),
   };
   dispatch(addTask(newTask));
   dispatch(setCurrentTask(newTask));

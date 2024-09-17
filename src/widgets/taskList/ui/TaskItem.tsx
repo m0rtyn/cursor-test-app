@@ -7,7 +7,6 @@ import styles from '../TaskList.module.css';
 interface TaskItemProps {
   task: Task;
   currentTaskId: string | null;
-  isRunning: boolean;
   onStartTask: (task: Task) => void;
   onCompleteTask: (id: string) => void;
   onCloseTask: (id: string, status: 'completed' | 'failed') => void;
@@ -17,7 +16,6 @@ interface TaskItemProps {
 export const TaskItem: React.FC<TaskItemProps> = ({
   task,
   currentTaskId,
-  isRunning,
   onStartTask,
   onCompleteTask,
   onCloseTask,
@@ -25,19 +23,22 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 }) => {
   return (
     <Flex width="100%" direction="column" gap="2" className={styles.taskItem}>
-      <Text className={styles.taskName}>{task.name} - {task.status}</Text>
-      {task.status !== 'pending' && (
+      <Text className={styles.taskName}>{task.title} - {task.status}</Text>
+
+      {task.status === 'completed' && (
         <Text size="2" color="gray" className={styles.taskDuration}>
-          {formatDuration(task.actualDuration || 0)} / {formatDuration(task.initialDuration || task.duration)}
+          {formatDuration(task.actualDuration || 0)} / {formatDuration(task.initialDuration || 0)}
         </Text>
       )}
-      {task.status === 'pending' && (
+
+      {task.status === 'active' && (
         <>
           {currentTaskId === task.id ? (
             <Flex gap="2">
               <Button onClick={() => onCompleteTask(task.id)} className={styles.completeTaskButton}>
                 Complete Task
               </Button>
+              
               <Dialog.Root>
                 <Dialog.Trigger asChild>
                   <Button className={styles.closeTaskButton}>Close Task</Button>
@@ -47,7 +48,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                   <Dialog.Content className={styles.dialogContent}>
                     <Dialog.Title className={styles.dialogTitle}>Close Task</Dialog.Title>
                     <Dialog.Description className={styles.dialogDescription}>
-                      Did you complete the task "{task.name}"?
+                      Did you complete the task "{task.title}"?
                     </Dialog.Description>
                     <Flex gap="3" mt="4" justify="end">
                       <Dialog.Close asChild>

@@ -1,10 +1,10 @@
 export interface Task {
   id: string;
   title: string;
-  status: 'active' | 'completed' | 'paused';
+  status: 'active' | 'completed' | 'failed';
+  createdAt: string;
+  initialDuration: number;
   actualDuration?: number;
-  createdAt: string; // Добавляем поле createdAt
-  initialDuration?: number;
 }
 
 export interface TaskState {

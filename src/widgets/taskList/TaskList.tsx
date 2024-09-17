@@ -11,10 +11,11 @@ import { useTaskManager } from '../../entities/task/useTaskManager';
 import { TaskItem } from './TaskItem';
 
 const TaskList: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { tasks, currentTask, isRunning, handleStartTask, handleTaskStatus } = useTaskManager();
   const [showConfetti, setShowConfetti] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  
+  const dispatch = useDispatch<AppDispatch>();
+  const { tasks, currentTask, isRunning, handleStartTask, handleTaskStatus } = useTaskManager();
 
   useEffect(() => {
     const initializeDB = async () => {
@@ -51,11 +52,6 @@ const TaskList: React.FC = () => {
     };
   }, [tasks]);
 
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  };
 
   const handleCompleteTask = (id: string) => {
     handleTaskStatus(id, 'completed');
@@ -64,9 +60,7 @@ const TaskList: React.FC = () => {
   };
 
   const sortedTasks = [...tasks].sort((a, b) => {
-    if (a.status === 'pending' && b.status !== 'pending') return -1;
-    if (a.status !== 'pending' && b.status === 'pending') return 1;
-    return b.id.localeCompare(a.id);
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
   return (
@@ -88,10 +82,10 @@ const TaskList: React.FC = () => {
             onStartTask={handleStartTask}
             onCompleteTask={handleCompleteTask}
             onCloseTask={handleTaskStatus}
-            formatDuration={formatDuration}
           />
         ))}
       </Grid>
+
       {showConfetti && <Confetti />}
     </>
   );

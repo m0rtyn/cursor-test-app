@@ -13,18 +13,22 @@ export const useTaskManager = () => {
   const { isRunning, remainingTime } = useSelector((state: RootState) => state.timer);
 
   const handleStartTask = useCallback((task: Task) => {
-    dispatch(setCurrentTask(task));
-    dispatch(startTimer(task.duration));
-    console.log('Starting task:', task.name, 'Duration:', task.duration);
+    const updatedTask: Task = {
+      ...task,
+      status: 'active',
+      actualDuration: task.actualDuration || 0,
+      initialDuration: task.initialDuration || 0
+    };
+    dispatch(setCurrentTask(updatedTask));
+    dispatch(startTimer(updatedTask.initialDuration));
   }, [dispatch]);
 
-  const handleTaskStatus = useCallback(async (id: string, status: 'completed' | 'failed') => {
+  const handleTaskStatus = useCallback(async (id: string, status: 'completed' | 'active') => {
     const task = tasks.find(t => t.id === id);
     if (!task) return;
 
-    const actualDuration = isRunning ? task.duration - remainingTime : 0;
-    const initialDuration = task.duration;
-    const updatedTask = { ...task, status, actualDuration, initialDuration };
+    const actualDuration = task?.actualDuration || 0 + (isRunning ? task.initialDuration - remainingTime : 0);
+    const updatedTask: Task = { ...task, status, actualDuration };
     
     dispatch(updateTaskStatus(updatedTask));
     dispatch(stopTimer());

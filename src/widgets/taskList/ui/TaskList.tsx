@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../app/providers/store';
 import { setTasks } from '../../../entities/task';
 import { stopTimer } from '../../../entities/timer';
-import { Flex, Text, Grid } from '@radix-ui/themes';
+import { Text, Grid } from '@radix-ui/themes';
 import Confetti from '../../../shared/ui/Confetti';
 import styles from '../TaskList.module.css';
 import { initDB, getAllTasks, syncTasks } from '../../../shared/lib/indexedDB';
@@ -14,7 +14,7 @@ import { Timer } from '../../../features/timerManagement';
 
 const TaskList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { tasks, currentTask, isRunning, handleStartTask, handleTaskStatus } = useTaskManager();
+  const { tasks, currentTask, handleStartTask, handleTaskStatus } = useTaskManager();
   const [showConfetti, setShowConfetti] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
@@ -60,9 +60,7 @@ const TaskList: React.FC = () => {
   };
 
   const sortedTasks = [...tasks].sort((a, b) => {
-    if (a.status === 'pending' && b.status !== 'pending') return -1;
-    if (a.status !== 'pending' && b.status === 'pending') return 1;
-    return b.id.localeCompare(a.id);
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
   return (
@@ -81,7 +79,6 @@ const TaskList: React.FC = () => {
             key={task.id}
             task={task}
             currentTaskId={currentTask?.id || null}
-            isRunning={isRunning}
             onStartTask={handleStartTask}
             onCompleteTask={handleCompleteTask}
             onCloseTask={handleTaskStatus}

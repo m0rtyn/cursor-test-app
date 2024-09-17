@@ -1,5 +1,4 @@
 .taskList {
-  max-width: 600px;
   margin: 0 auto;
   padding: 1rem;
 }
@@ -18,6 +17,10 @@
 
 .taskName {
   font-weight: bold;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 10ch;
 }
 
 .taskDuration {

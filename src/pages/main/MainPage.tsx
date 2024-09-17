@@ -6,7 +6,7 @@ import { Flex, Heading } from '@radix-ui/themes';
 const MainPage: React.FC = () => {
   return (
     <Flex direction="column" gap="4" p="4">
-      <Heading size="8">Task Timer App</Heading>
+      <Heading size="8" align="center">Matodoro Timer</Heading>
       <TimerControl />
       <TaskList />
     </Flex>

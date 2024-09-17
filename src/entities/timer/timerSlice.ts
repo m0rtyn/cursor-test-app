@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface TimerState {
+export interface TimerState {
   isRunning: boolean;
   duration: number;
   remainingTime: number;

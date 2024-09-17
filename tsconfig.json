@@ -27,7 +27,8 @@
       "@features/*": ["features/*"],
       "@shared/*": ["shared/*"],
       "@widgets/*": ["widgets/*"]
-    }
+    },
+    "noEmitOnError": true
   },
   "include": ["src"]
 }
