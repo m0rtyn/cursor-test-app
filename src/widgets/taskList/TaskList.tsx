@@ -59,6 +59,10 @@ const TaskList: React.FC = () => {
     setTimeout(() => setShowConfetti(false), 3000);
   };
 
+  const handleFailTask = (id: string) => {
+    handleTaskStatus(id, 'failed');
+  };
+
   const sortedTasks = [...tasks].sort((a, b) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });

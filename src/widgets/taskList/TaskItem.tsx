@@ -1,6 +1,5 @@
 import React from 'react';
-import { Flex, Text, Button, Badge } from '@radix-ui/themes';
-import * as Dialog from '@radix-ui/react-dialog';
+import { Flex, Text, Button, Badge, Dialog, Portal } from '@radix-ui/themes';
 import { Task } from '../../entities/task/types';
 import styles from './TaskList.module.css';
 
@@ -10,7 +9,7 @@ interface TaskItemProps {
   isRunning: boolean;
   onStartTask: (task: Task) => void;
   onCompleteTask: (id: string) => void;
-  onCloseTask: (id: string, status: 'completed') => void;
+  onCloseTask: (id: string, status: 'completed' | 'failed') => void;
 }
 
 export const TaskItem: React.FC<TaskItemProps> = ({
@@ -26,7 +25,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       <Flex direction="row" justify="between" align="center">
         <Text className={styles.taskName}>{task.title}</Text>
         <Badge
-          color={task.status === 'active' ? 'yellow' : 'completed' ? 'green' : 'red'}
+          color={task.status === 'active' ? 'yellow' : task.status === 'completed' ? 'green' : 'red'}
         >
           {task.status}
         </Badge>
@@ -45,31 +44,10 @@ export const TaskItem: React.FC<TaskItemProps> = ({
               <Button onClick={() => onCompleteTask(task.id)} className={styles.completeTaskButton}>
                 Complete Task
               </Button>
-              
-              <Dialog.Root>
-                <Dialog.Trigger asChild>
-                  <Button className={styles.closeTaskButton}>Close Task</Button>
-                </Dialog.Trigger>
-                <Dialog.Portal>
-                  <Dialog.Overlay className={styles.dialogOverlay} />
-                  <Dialog.Content className={styles.dialogContent}>
-                    <Dialog.Title className={styles.dialogTitle}>Close Task</Dialog.Title>
-                    <Dialog.Description className={styles.dialogDescription}>
-                      Are you sure you want to complete the task "{task.title}"?
-                    </Dialog.Description>
-                    <Flex gap="3" mt="4" justify="end">
-                      <Dialog.Close asChild>
-                        <Button onClick={() => onCloseTask(task.id, 'completed')} className={styles.dialogButton}>
-                          Yes, Complete
-                        </Button>
-                      </Dialog.Close>
-                      <Dialog.Close asChild>
-                        <Button className={styles.dialogButton}>Cancel</Button>
-                      </Dialog.Close>
-                    </Flex>
-                  </Dialog.Content>
-                </Dialog.Portal>
-              </Dialog.Root>
+
+              <Button onClick={() => onCloseTask(task.id, 'failed')} className={styles.closeTaskButton}>
+                Fail Task
+              </Button>
             </Flex>
           ) : (
             <Button 

@@ -1,6 +1,6 @@
 import { AppDispatch } from '../../../app/providers/store';
-import { resetTimer } from '../../../entities/timer/timerSlice';
+import { stopTimer as stopTimerAction } from '../../../entities/timer/timerSlice';
 
 export const stopTimer = () => (dispatch: AppDispatch) => {
-  dispatch(resetTimer());
+  dispatch(stopTimerAction());
 };

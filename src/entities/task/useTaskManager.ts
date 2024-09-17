@@ -23,7 +23,7 @@ export const useTaskManager = () => {
     dispatch(startTimer(updatedTask.initialDuration));
   }, [dispatch]);
 
-  const handleTaskStatus = useCallback(async (id: string, status: 'completed' | 'active') => {
+  const handleTaskStatus = useCallback(async (id: string, status: 'completed' | 'active' | 'failed') => {
     const task = tasks.find(t => t.id === id);
     if (!task) return;
 
