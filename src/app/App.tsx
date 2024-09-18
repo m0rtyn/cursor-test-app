@@ -8,7 +8,7 @@ import '@radix-ui/themes/styles.css';
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <Theme>
+      <Theme appearance="dark">
         <MainPage />
       </Theme>
     </Provider>

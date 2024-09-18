@@ -1,5 +1,11 @@
 import React from 'react';
-import { Flex, Text, Button, Badge, Dialog, Portal } from '@radix-ui/themes';
+import {
+  Flex,
+  Text,
+  Button,
+  Badge,
+  Card
+} from '@radix-ui/themes';
 import { Task } from '../../entities/task/types';
 import styles from './TaskList.module.css';
 
@@ -18,49 +24,64 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   isRunning,
   onStartTask,
   onCompleteTask,
-  onCloseTask,
+  onCloseTask
 }) => {
   return (
-    <Flex width="100%" direction="column" gap="2" className={styles.taskItem}>
-      <Flex direction="row" justify="between" align="center">
-        <Text className={styles.taskName}>{task.title}</Text>
-        <Badge
-          color={task.status === 'active' ? 'yellow' : task.status === 'completed' ? 'green' : 'red'}
-        >
-          {task.status}
-        </Badge>
+    <Card>
+      <Flex width="100%" direction="column" gap="2">
+        <Flex direction="row" justify="between" align="center">
+          <Text className={styles.taskName}>{task.title}</Text>
+          <Badge
+            color={
+              task.status === 'active'
+                ? 'yellow'
+                : task.status === 'completed'
+                ? 'green'
+                : 'red'
+            }
+          >
+            {task.status}
+          </Badge>
+        </Flex>
+
+        {task.status === 'completed' && (
+          <Text size="2" color="gray" className={styles.taskDuration}>
+            {formatDuration(task?.actualDuration || 0)} /{' '}
+            {formatDuration(task?.initialDuration || 0)}
+          </Text>
+        )}
+
+        {task.status === 'active' && (
+          <>
+            {currentTaskId === task.id ? (
+              <Flex gap="2">
+                <Button
+                  onClick={() => onCompleteTask(task.id)}
+                  className={styles.completeTaskButton}
+                >
+                  Complete Task
+                </Button>
+
+                <Button
+                  onClick={() => onCloseTask(task.id, 'failed')}
+                  className={styles.closeTaskButton}
+                >
+                  Fail Task
+                </Button>
+              </Flex>
+            ) : (
+              <Button
+                onClick={() => onStartTask(task)}
+                className={styles.startTaskButton}
+                disabled={isRunning && currentTaskId !== task.id}
+              >
+                Start Task
+              </Button>
+            )}
+          </>
+        )}
       </Flex>
-      
-      {task.status === 'completed' && (
-        <Text size="2" color="gray" className={styles.taskDuration}>
-          {formatDuration(task?.actualDuration || 0)} / {formatDuration(task?.initialDuration || 0)}
-        </Text>
-      )}
-
-      {task.status === 'active' && (
-        <>
-          {currentTaskId === task.id ? (
-            <Flex gap="2">
-              <Button onClick={() => onCompleteTask(task.id)} className={styles.completeTaskButton}>
-                Complete Task
-              </Button>
-
-              <Button onClick={() => onCloseTask(task.id, 'failed')} className={styles.closeTaskButton}>
-                Fail Task
-              </Button>
-            </Flex>
-          ) : (
-            <Button 
-              onClick={() => onStartTask(task)} 
-              className={styles.startTaskButton}
-              disabled={isRunning && currentTaskId !== task.id}
-            >
-              Start Task
-            </Button>
-          )}
-        </>
-      )}
-    </Flex>
+    </Card>
   );
 };
 

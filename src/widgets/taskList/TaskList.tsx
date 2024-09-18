@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../app/providers/store';
 import { setTasks } from '../../entities/task/taskSlice';
 import { stopTimer } from '../../entities/timer/timerSlice';
-import { Flex, Text, Grid } from '@radix-ui/themes';
+import { Flex, Text, Grid, Heading } from '@radix-ui/themes';
 import Confetti from '../../shared/ui/Confetti';
 import styles from './TaskList.module.css';
 import { initDB, getAllTasks, syncTasks } from '../../shared/lib/indexedDB';
@@ -75,7 +75,8 @@ const TaskList: React.FC = () => {
         </Text>
       )}
       
-      <Text size="5" weight="bold" className={styles.title}>Task List</Text>
+      <Heading size="5" as="h3" weight="bold" align='center' mt='5'>Task List</Heading>
+      
       <Grid width="100%" columns="1fr 1fr 1fr" gap="3" className={styles.taskList}>
         {sortedTasks.map((task) => (
           <TaskItem
